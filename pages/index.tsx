@@ -3,7 +3,13 @@ import * as React from "react";
 import { QueryClient, QueryClientProvider, QueryCache } from "react-query";
 import { ChakraProvider, Box, Heading } from "@chakra-ui/react";
 import { Toaster, toast } from "react-hot-toast";
+import { Provider as WagmiProvider } from 'wagmi'
 import theme from "../theme";
+import { providers } from "ethers";
+import Comments from "../components/Comments";
+
+// Provider that will be used when no wallet is connected (aka no signer)
+const provider = providers.getDefaultProvider( "https://rpc-mumbai.maticvigil.com");
 
 // Create a react-query client
 const queryClient = new QueryClient({
@@ -23,14 +29,16 @@ const queryClient = new QueryClient({
 
 const App: NextPage = () => {
   return (
+    <WagmiProvider autoConnect provider = {provider}>
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <Box p={8} maxW="600px" minW="320px" m="0 auto">
-          <Heading>Oops, no comments yet!</Heading>
+          <Comments topic="my-blog-post"/>
           <Toaster position="bottom-right" />
         </Box>
       </QueryClientProvider>
     </ChakraProvider>
+    </WagmiProvider>
   );
 };
 
